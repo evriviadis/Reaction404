@@ -1,0 +1,1320 @@
+openapi: 3.0.0
+info:
+  title: W360 Internal API
+  version: 1.0.0
+  description: Internal api for W360
+
+tags:
+  - name: Users
+    description: Operations related to users
+  - name: Contents
+    description: Operations related to content
+
+paths:
+  /users/register:
+    post:
+      tags:
+        - Users
+      summary: Register a new user
+      description: Endpoint to register a new user in the system.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+                - first_name
+                - last_name
+                - email
+                - region
+                - phone
+              properties:
+                username:
+                  type: string
+                  example: johndoe
+                password:
+                  type: string
+                  example: securepassword123
+                first_name:
+                  type: string
+                  example: John
+                last_name:
+                  type: string
+                  example: Doe
+                email:
+                  type: string
+                  example: john.doe@example.com
+                region:
+                  type: string
+                  example: North America
+                phone:
+                  type: string
+                  example: 123-456-7890
+      responses:
+        '200':
+          description: Registration successful
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Activate your account from the URL in your email :)
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: username/gmail already in use
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: An error occurred on the server side
+
+
+  /users/resetpassword:
+    post:
+      tags:
+        - Users
+      summary: Reset user password request
+      description: Endpoint to reset a user's password by sending a reset link to their email.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: test@example.com
+      responses:
+        '200':
+          description: Password reset link sent successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: password reset link has been sent to user's email
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Missing required fields or invalid data
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: An error occurred on the server side
+
+
+  /users/login:
+    post:
+      tags:
+        - Users
+      summary: User login
+      description: Endpoint to log in a user and return a token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  example: example
+                password:
+                  type: string
+                  example: example
+      responses:
+        '201':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  message:
+                    type: string
+                    example: Login successful
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid username or password
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: An error occurred on the server side
+
+
+  /users/preferences/categories:
+    post:
+      tags:
+        - Users
+      summary: Add a category to user's preferences
+      description: Endpoint to add a preference category for a user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - category
+              properties:
+                category:
+                  type: string
+                  example: categoryname
+      parameters:
+        - in: header
+          name: authorization
+          required: true
+          schema:
+            type: string
+          example: bearer jwt_token
+          description: JWT token for authentication
+      responses:
+        '200':
+          description: Category added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  category:
+                    type: string
+                    example: newcategory
+                  username:
+                    type: string
+                    example: johndoe
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Missing required fields or invalid data
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid or missing JWT token
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: An error occurred on the server side
+
+
+  /users/id/{id}/follow:
+    post:
+      tags:
+        - Users
+      summary: Follow or unfollow a user by ID
+      description: Endpoint to follow or unfollow a user by their ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The ID of the user to follow or unfollow
+        - in: header
+          name: authorization
+          required: true
+          schema:
+            type: string
+          example: bearer jwt_token
+          description: JWT token for authentication
+      responses:
+        '200':
+          description: Successfully followed or unfollowed the user
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: success follow/unfollow
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: no user with this id
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid or missing JWT token
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: An error occurred on the server side
+
+  /content:
+    get:
+      tags:
+        - Contents
+      summary: Retrieve content
+      description: Endpoint to retrieve content.
+      responses:
+        '200':
+          description: Content retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  contents:
+                    type: array
+                    items:
+                      type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Missing required fields or invalid data
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: An error occurred on the server side
+
+
+  /content/post:
+    post:
+      tags:
+        - Contents
+      summary: Add new content
+      description: Endpoint to add new content.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - title
+                - content
+                - caption
+                - longitude
+                - latitude
+                - files
+              properties:
+                title:
+                  type: string
+                  description: Title of the content
+                  example: Sample Title
+                content:
+                  type: string
+                  description: The content text
+                  example: This is the content text.
+                caption:
+                  type: string
+                  description: Caption for the content
+                  example: Sample Caption
+                longitude:
+                  type: number
+                  description: Longitude of the content location
+                  example: 123.456
+                latitude:
+                  type: number
+                  description: Latitude of the content location
+                  example: 78.910
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: Files to upload
+      parameters:
+        - in: header
+          name: authorization
+          required: true
+          schema:
+            type: string
+          example: bearer jwt_token
+          description: JWT token for authentication
+      responses:
+        '201':
+          description: Content added successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: content added to database
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Missing required fields or invalid data
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid or missing JWT token
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: An error occurred on the server side
+
+
+  /content/id/{id}/delete:
+      delete:
+        tags:
+          - Contents
+        summary: Delete content by ID
+        description: Endpoint to delete content by its ID.
+        parameters:
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: string
+            description: The ID of the content to delete
+          - in: header
+            name: authorization
+            required: true
+            schema:
+              type: string
+            example: bearer jwt_token
+            description: JWT token for authentication
+        responses:
+          '201':
+            description: Content deleted successfully
+            content:
+              text/plain:
+                schema:
+                  type: string
+                  example: the content has been deleted
+          '400':
+            description: Bad Request
+            content:
+              text/plain:
+                schema:
+                  type: string
+                  example: no content with this id, or the user is not the owner
+          '401':
+            description: Unauthorized
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      example: Invalid or missing JWT token
+          '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      example: An error occurred on the server side
+
+                    
+  /content/id/{id}/edit:
+    get:
+      tags:
+        - Contents
+      summary: Retrieve content for editing
+      description: Endpoint to retrieve content by its ID for editing.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The ID of the content to retrieve for editing
+        - in: header
+          name: authorization
+          required: true
+          schema:
+            type: string
+          example: bearer jwt_token
+          description: JWT token for authentication
+      responses:
+        '201':
+          description: Content retrieved successfully for editing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content_to_edit:
+                    type: object
+                    description: The content to be edited
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: no content with this id, or the user is not the owner
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid or missing JWT token
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: An error occurred on the server side
+    put:
+      tags:
+        - Contents
+      summary: Edit content by ID
+      description: Endpoint to edit content by its ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The ID of the content to edit
+        - in: header
+          name: authorization
+          required: true
+          schema:
+            type: string
+          example: bearer jwt_token
+          description: JWT token for authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - content
+              properties:
+                title:
+                  type: string
+                  description: Title of the content
+                  example: Updated Title
+                content:
+                  type: string
+                  description: The content text
+                  example: This is the updated content text.
+      responses:
+        '201':
+          description: Content updated successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: content updated
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: no content with this id, or the user is not the owner
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid or missing JWT token
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: An error occurred on the server side
+
+
+  /content/id/{id}/comment:
+    post:
+      tags:
+        - Contents
+      summary: Post a comment on content
+      description: Endpoint to post a comment on content by its ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The ID of the content to comment on
+        - in: header
+          name: authorization
+          required: true
+          schema:
+            type: string
+          example: bearer jwt_token
+          description: JWT token for authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - text
+              properties:
+                text:
+                  type: string
+                  description: The text of the comment
+                  example: This is a comment
+      responses:
+        '201':
+          description: Comment posted successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: comment posted
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: no content with this id
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid or missing JWT token
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: An error occurred on the server side
+
+
+  /content/id/{id}/comment/id/{comment_id}/edit:
+    get:
+      tags:
+        - Contents
+      summary: Retrieve a comment for editing
+      description: Endpoint to retrieve a comment by its ID for editing.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The ID of the content
+        - in: path
+          name: comment_id
+          required: true
+          schema:
+            type: string
+          description: The ID of the comment to retrieve for editing
+        - in: header
+          name: authorization
+          required: true
+          schema:
+            type: string
+          example: bearer jwt_token
+          description: JWT token for authentication
+      responses:
+        '201':
+          description: Comment retrieved successfully for editing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  comment:
+                    type: string
+                    description: The comment to be edited
+                    example: This is the comment text.
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+                examples:
+                  no_content:
+                    summary: No content with this ID
+                    value: no content with this id
+                  no_comment:
+                    summary: No comment with that ID or not matching user
+                    value: no comment with that id or not matching user
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid or missing JWT token
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: An error occurred on the server side
+
+    put :
+      tags:
+        - Contents
+      summary: Edit a comment by ID
+      description: Endpoint to edit a comment by its ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The ID of the content
+        - in: path
+          name: comment_id
+          required: true
+          schema:
+            type: string
+          description: The ID of the comment to edit
+        - in: header
+          name: authorization
+          required: true
+          schema:
+            type: string
+          example: bearer jwt_token
+          description: JWT token for authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - text
+              properties:
+                text:
+                  type: string
+                  description: The updated text of the comment
+                  example: This is the updated comment text.
+      responses:
+        '201':
+          description: Comment updated successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: comment updated
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+                examples:
+                  no_content:
+                    summary: No content with this ID
+                    value: no content with this id
+                  no_comment:
+                    summary: No comment with that ID or not matching user
+                    value: no comment with that id or not matching user
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid or missing JWT token
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: An error occurred on the server side
+
+
+  /content/id/{id}/comment/id/{comment_id}/delete:
+    delete:
+      tags:
+        - Contents
+      summary: Delete a comment by ID
+      description: Endpoint to delete a comment by its ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The ID of the content
+        - in: path
+          name: comment_id
+          required: true
+          schema:
+            type: string
+          description: The ID of the comment to delete
+        - in: header
+          name: authorization
+          required: true
+          schema:
+            type: string
+          example: bearer jwt_token
+          description: JWT token for authentication
+      responses:
+        '201':
+          description: Comment deleted successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: comment deleted
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+                examples:
+                  no_content:
+                    summary: No content with this ID
+                    value: no content with this id
+                  no_comment:
+                    summary: No comment with that ID or not matching user
+                    value: no comment with that id or not matching user
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid or missing JWT token
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: An error occurred on the server side
+
+
+  /content/id/{id}/save:
+    get:
+      tags:
+        - Contents
+      summary: Bookmark content by ID
+      description: Endpoint to bookmark content by its ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The ID of the content to bookmark
+        - in: header
+          name: authorization
+          required: true
+          schema:
+            type: string
+          example: bearer jwt_token
+          description: JWT token for authentication
+      responses:
+        '201':
+          description: Content bookmarked successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: bookmark content
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: no content with this id
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid or missing JWT token
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: An error occurred on the server side
+
+
+  /content/id/{id}/react:
+    post:
+      tags:
+        - Contents
+      summary: Add, change, or remove reaction to a content by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The ID of the content
+        - in: header
+          name: authorization
+          required: true
+          schema:
+            type: string
+            example: bearer jwt_token
+          description: JWT token for authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                react:
+                  type: string
+                  description: The reaction text (e.g., "like", "love", etc.)
+                  example: "like"
+      responses:
+        '201':
+          description: React added, changed, or removed successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: |-
+                  react added to post
+                  reaction changed
+                  reaction removed
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+                examples:
+                  no_content:
+                    summary: No content with this ID
+                    value: no content with this id
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid or missing JWT token
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: An error occurred on the server side
+
+
+  /users/update:
+    get:
+      tags:
+        - Users
+      summary: Get user's information to update
+      description: Endpoint to get updated user information.
+      parameters:
+        - in: header
+          name: authorization
+          required: true
+          schema:
+            type: string
+          example: bearer jwt_token
+          description: JWT token for authentication
+      responses:
+        '201':
+          description: Successfully retrieved updated user information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    type: object
+                    properties:
+                      username:
+                        type: string
+                        example: johndoe
+                      first_name:
+                        type: string
+                        example: John
+                      last_name:
+                        type: string
+                        example: Doe
+                      email:
+                        type: string
+                        example: johndoe@example.com
+                      region:
+                        type: string
+                        example: North America
+                      phone:
+                        type: string
+                        example: +123456789
+                      nickname:
+                        type: string
+                        example: johnyjohny
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: no user found
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid or missing JWT token
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: An error occurred on the server side
+    
+    put:
+      tags:
+        - Users
+      summary: Update user information
+      description: Endpoint to update user information.
+      parameters:
+        - in: header
+          name: authorization
+          required: true
+          schema:
+            type: string
+          example: bearer jwt_token
+          description: JWT token for authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: johndoe
+                first_name:
+                  type: string
+                  example: John
+                last_name:
+                  type: string
+                  example: Doe
+                email:
+                  type: string
+                  example: johndoe@example.com
+                region:
+                  type: string
+                  example: North America
+                phone:
+                  type: string
+                  example: +123456789
+                nickname:
+                  type: string
+                  example: johnyjohny
+      responses:
+        '201':
+          description: User information updated successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: user updated
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: no user found
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid or missing JWT token
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: An error occurred on the server side
+
+
+  /content/screen_posts:
+    get:
+      tags:
+        - Contents
+      summary: Get posts within a specific screen area
+      description: Endpoint to retrieve posts within a specific geographical area defined by the coordinates of the screen corners.
+      parameters:
+        - in: header
+          name: authorization
+          required: true
+          schema:
+            type: string
+          example: bearer jwt_token
+          description: JWT token for authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                lefttop:
+                  type: object
+                  properties:
+                    longitude:
+                      type: number
+                      example: 18.149414062500004
+                    latitude:
+                      type: number
+                      example: 41.85115059465234
+                righttop:
+                  type: object
+                  properties:
+                    longitude:
+                      type: number
+                      example: 28.7841796875
+                    latitude:
+                      type: number
+                      example: 41.85115059465234
+                rightbot:
+                  type: object
+                  properties:
+                    longitude:
+                      type: number
+                      example: 25.378417968750004
+                    latitude:
+                      type: number
+                      example: 34.478259918578445
+      responses:
+        '201':
+          description: Successfully retrieved posts within the specified screen area
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: "12345"
+                    title:
+                      type: string
+                      example: "Post Title"
+                    content:
+                      type: string
+                      example: "Post Content"
+                    longitude:
+                      type: number
+                      example: 22.149414062500004
+                    latitude:
+                      type: number
+                      example: 39.85115059465234
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Invalid coordinates or request body
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid or missing JWT token
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: An error occurred on the server side
