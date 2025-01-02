@@ -5,6 +5,9 @@ import { sendEmail } from '../Server/email.js';
 import jwt from 'jsonwebtoken';
 import { existsSync } from "fs";
 
+//Reaction404db
+import {db} from '../Database/db_handler.js';
+
 const salt = bcrypt.genSaltSync(10);
 
 const registeruser = async (req, res) => {

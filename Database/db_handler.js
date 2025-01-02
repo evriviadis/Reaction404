@@ -86,7 +86,7 @@ async function getTopScores() {
     }
 }
 
-
+/* 
 (async () => {
     await insertUser("chris", "muttz", "chris@gmail.com", "9104");
     await insertUser("evris", "kolaki", "evris@gmail.com", "kwdikos");
@@ -98,3 +98,16 @@ async function getTopScores() {
     getTopScores()
     //UsersData(1);
 })();
+
+ */
+
+
+//export all functions
+
+export const db = {
+    users,
+    UsersData,
+    insertUser,
+    insertScore,
+    getTopScores
+}
