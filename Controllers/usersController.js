@@ -7,6 +7,7 @@ import { existsSync } from "fs";
 
 //Reaction404db
 import {db} from '../Database/db_handler.js';
+import { DeleteBucketLifecycleCommand } from "@aws-sdk/client-s3";
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -15,54 +16,20 @@ const registeruser = async (req, res) => {
         const new_user = req.body;
 
         //CHECK IF USERNAME/EMAIL ALREADY IN USE
-        const username_check = await user.findOne({ username: new_user.username });
-        const email_check = await user.findOne({ email: new_user.email });
+        const username_check = await db.UsernameData(new_user.username);
         if (username_check) {
             res.status(400).send({message:"Username already in use."});
-        } else if (email_check) {
-            res.status(400).send({message:"Email already in use. Try loggin in instead."});
         } else {
 
             //CREATING THE ENCODED PASSWORD
             const hash = await bcrypt.hash(new_user.password, salt);
             new_user.password = hash;
 
-            //CREATING REGISTER TOKEN
-            const register_token = crypto.randomBytes(32).toString('hex');
-            const encrypted_register_token = crypto.createHash('sha256').update(register_token).digest('hex');
-
             //SAVE USER
-            const save_user = new user({
-                username: new_user.username,
-                password: new_user.password,
-                first_name: new_user.first_name,
-                last_name: new_user.last_name,
-                nickname: new_user.username, //STARTING nickname == username 
-                email: new_user.email,
-                region: new_user.region,
-                phone: new_user.phone,
-                register_token: encrypted_register_token,
-                active: false
-            });
-            await save_user.save();
+            db.insertUser(new_user.username, new_user.nickname, new_user.password);
 
-            //SENDING REGISTERATION EMAIL
-            // const url = `${req.protocol}://${req.get('host')}/users/register/${register_token}`;
-            try {
-
-
-                const url = `https://api.worldthreesixty.com/users/register/${register_token}`;
-                const message = `Please click the link to activate your account.\n ${url}`;
-                await sendEmail({
-                    email: save_user.email,
-                    subject: 'Registration url',
-                    message: message
-                });
-                res.status(200).send({message:"User registration successful. Please activate your account from the url in your e-mail."});
-            } catch (error) {
-                console.error(error);
-                res.status(500).send({message:error});
-            }
+            console.log("user successfully signed in");
+            res.status(200).send();
         }
     } catch (error) {
         console.error(error);
@@ -146,15 +113,16 @@ const reset_password = async (req, res) => {
 
 const login = async (req, res) => {
     //CHECK IF USER EXISTS
-    const login_user = await user.findOne({ username: req.body.username });
+    const login_user = await db.UsernameData(req.body.username);
     if (!login_user) {
+        console.log("no username match");
         return res.status(401).send({message:"Cannod find user. Try another Username / Email.",errors:"User not found."});
     } else {
         try {
             //CHECK PASSWORD VALIDATION
             if (await bcrypt.compare(req.body.password, login_user.password)) {
                 //CREATE LOGIN TOKEN
-                const token = jwt.sign({ userid: login_user._id }, "THIS-STRING-IS-SECRET-AF", {
+                const token = jwt.sign({ userid: login_user.id }, "THIS-STRING-IS-SECRET-AF", {
                     expiresIn: 31536000
                 });
                 const message = 'Log in successful!';
@@ -162,7 +130,7 @@ const login = async (req, res) => {
                 res.status(201).json({
                     status: 'success',
                     message: message,
-                    user: {first_name:login_user.first_name,last_name:login_user.last_name,email:login_user.email,token: token},
+                    user: {username:login_user.username, nickname: login_user.nickname, token: token},
                     errors:{}
                 })
             } else {

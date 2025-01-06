@@ -1,5 +1,10 @@
 //import {Pool} from 'pg';
-const {Pool}=require('pg');
+//const {Pool}=require('pg');
+
+import pkg from 'pg';
+const { Pool } = pkg;
+
+
 
 /*const poolConfig = {
     max: 5,
@@ -37,6 +42,7 @@ async function users(){
     const Params = [];
 
     const result = await executeQuery(Query,Params);
+    return result;
 }
 
 //print data for a user
@@ -44,13 +50,24 @@ async function UsersData(id){
     const Query = 'SELECT * FROM users WHERE id = $1';
     const Params = [id];
 
-    const result = await executeQuery(Query,Params);
+    const [result] = await executeQuery(Query,Params);
+    return result;
 }
 
+//get user from username
+async function UsernameData(username){
+    const Query = 'SELECT * FROM users WHERE username = $1';
+    const Params = [username];
+
+    const [result] = await executeQuery(Query,Params);
+    return result;
+}
+
+
 //insert user
-async function insertUser(username, nickname, email, password) {
-    const Query = 'INSERT into users (username, nickname, email, password) VALUES ($1, $2, $3, $4)';
-    const Params = [username, nickname, email, password];
+async function insertUser(username, nickname, password) {
+    const Query = 'INSERT into users (username, nickname, password) VALUES ($1, $2, $3)';
+    const Params = [username, nickname, password];
 
     try {
         const result = await executeQuery(Query,Params);
@@ -81,6 +98,7 @@ async function getTopScores() {
 
     try {
         const result = await executeQuery(Query,Params);
+        return result;
     } catch (err) {
         console.error('top 10 scores failed:', err);
     }
@@ -101,12 +119,20 @@ async function getTopScores() {
 
  */
 
+(async () => {
+    users();
+    //getTopScores()
+    /* let result = await UsersData(1);
+    console.log(result); */
+})();
+
 
 //export all functions
 
 export const db = {
     users,
     UsersData,
+    UsernameData,
     insertUser,
     insertScore,
     getTopScores
