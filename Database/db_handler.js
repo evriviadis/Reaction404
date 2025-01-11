@@ -16,7 +16,7 @@ const Database = "Reaction404_db";
 const UserName = "postgres";
 const password = "liapis8888";
 const port = 5432;
-const host = 'localhost';
+const host = '192.168.1.7';
 
 const pool = new Pool({
     user: UserName,
@@ -58,6 +58,15 @@ async function UsersData(id){
 async function UsernameData(username){
     const Query = 'SELECT * FROM users WHERE username = $1';
     const Params = [username];
+
+    const [result] = await executeQuery(Query,Params);
+    return result;
+}
+
+//get user from nickname
+async function NicknameData(nickname){
+    const Query = 'SELECT * FROM users WHERE nickname = $1';
+    const Params = [nickname];
 
     const [result] = await executeQuery(Query,Params);
     return result;
@@ -135,5 +144,6 @@ export const db = {
     UsernameData,
     insertUser,
     insertScore,
-    getTopScores
+    getTopScores,
+    NicknameData
 }

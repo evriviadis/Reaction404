@@ -17,8 +17,10 @@ const registeruser = async (req, res) => {
 
         //CHECK IF USERNAME/EMAIL ALREADY IN USE
         const username_check = await db.UsernameData(new_user.username);
-        if (username_check) {
-            res.status(400).send({message:"Username already in use."});
+        const nickname_check = await db.NicknameData(new_user.nickname);
+        if (username_check || nickname_check) {
+            console.log("username or nickname already in use");
+            res.status(400).send({message:"Username or Nickname already in use."});
         } else {
 
             //CREATING THE ENCODED PASSWORD
@@ -29,7 +31,7 @@ const registeruser = async (req, res) => {
             db.insertUser(new_user.username, new_user.nickname, new_user.password);
 
             console.log("user successfully signed in");
-            res.status(200).send();
+            res.status(200).send({message:"user inserted in the database"});
         }
     } catch (error) {
         console.error(error);
@@ -116,7 +118,7 @@ const login = async (req, res) => {
     const login_user = await db.UsernameData(req.body.username);
     if (!login_user) {
         console.log("no username match");
-        return res.status(401).send({message:"Cannod find user. Try another Username / Email.",errors:"User not found."});
+        return res.status(401).send({message:"Cannod find user. Try another Username / Email.",errors:"User not found.", status:401});
     } else {
         try {
             //CHECK PASSWORD VALIDATION
