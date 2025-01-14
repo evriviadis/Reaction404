@@ -1,61 +1,68 @@
 <template>
-    <div class="login-page">
-      <h2>Login Page</h2>
-      <p>Please enter your login details below:</p>
-      <form @submit.prevent="handleLogin" class="form-container">
-        <input type="text" placeholder="Username" class="input-field" v-model="username" />
-        <input type="password" placeholder="Password" class="input-field" v-model="password" />
-        <button type="submit" class="primary-button animated-button">Login</button>
-      </form>
-    </div>
-  </template>
-  
-  <script>
-    export default {
-        data() {
-            return {
-                username: '',
-                password: '',
-            };
-        },
-        methods: {
-            async handleLogin() {
-                console.log('Login Attempt');
-                console.log('Username:', this.username);
-                console.log('Password:', this.password);
+  <div class="login-page">
+    <h2>Login Page</h2>
+    <p>Please enter your login details below:</p>
+    <form @submit.prevent="handleLogin" class="form-container">
+      <input type="text" placeholder="Username" class="input-field" v-model="username" />
+      <input type="password" placeholder="Password" class="input-field" v-model="password" />
+      <button type="submit" class="primary-button animated-button">Login</button>
+    </form>
+  </div>
+</template>
 
-                // Make the API request here
-                try {
-                    const response = await fetch('http://localhost:8080/users/login', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            username: this.username,
-                            password: this.password,
-                        }),
-                    });
+<script>
+import { inject } from 'vue';
 
-                    // Handle the response
-                    if (response.ok) {
-                        const data = await response.json();
-                        console.log('Login Success:', data);
-                        // Handle successful login (redirect, store token, etc.)
-                    } else {
-                        const data = await response.json();
-                        console.log('Login Failed:', data);
-                        console.error('Login Failed:', response.status);
-                        // Handle login failure (show error message, etc.)
-                    }
-                } catch (error) {
-                    console.error('Request failed', error);
-                    // Handle network errors or unexpected issues
-                }
-            },
-        },
+export default {
+  data() {
+    return {
+      username: '',
+      password: '',
     };
-  </script>
+  },
+  methods: {
+    async handleLogin() {
+      console.log('Login Attempt');
+      console.log('Username:', this.username);
+      console.log('Password:', this.password);
+
+      try {
+        const response = await fetch('http://localhost:8080/users/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: this.username,
+            password: this.password,
+          }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Login Success:', data);
+
+          // Update global login state
+          this.$root.login = true;
+          this.$root.username = this.username;
+          this.$root.nickname = data.user.nickname;
+
+          // Redirect or perform post-login actions
+          this.$router.push({name: 'game'}); // Adjust this route as needed
+        } else {
+          const data = await response.json();
+          console.error('Login Failed:', data);
+          alert('Invalid login credentials. Please try again.');
+        }
+      } catch (error) {
+        console.error('Request failed:', error);
+        console.log(error);
+        alert('An error occurred. Please try again later.');
+      }
+    },
+  },
+};
+</script>
   
   <style>
   /* Login Page Styles */

@@ -16,7 +16,7 @@ const Database = "Reaction404_db";
 const UserName = "postgres";
 const password = "liapis8888";
 const port = 5432;
-const host = '192.168.1.7';
+const host = '192.168.1.9';
 
 const pool = new Pool({
     user: UserName,
@@ -99,7 +99,6 @@ async function insertScore(user_id, score) {
     }
 }
 
-
 //get top ten scores
 async function getTopScores() {
     const Query = 'SELECT u.nickname, MIN(s.score) AS highest_score FROM scores s JOIN users u ON s.user_id = u.id GROUP BY u.id, u.nickname ORDER BY highest_score ASC LIMIT 10;';
@@ -112,6 +111,20 @@ async function getTopScores() {
         console.error('top 10 scores failed:', err);
     }
 }
+
+async function getUserScores(user_id) {
+    const Query = 'SELECT s.score FROM scores s WHERE s.user_id = $1 ORDER BY s.score ASC LIMIT 10;';
+    const Params = [user_id];
+
+    try {
+        const result = await executeQuery(Query,Params);
+        return result;
+    } catch (err) {
+        console.error('scores failed:', err);
+    }
+}
+
+
 
 /* 
 (async () => {
@@ -135,9 +148,7 @@ async function getTopScores() {
     console.log(result); */
 })();
 
-
 //export all functions
-
 export const db = {
     users,
     UsersData,
@@ -145,5 +156,6 @@ export const db = {
     insertUser,
     insertScore,
     getTopScores,
-    NicknameData
+    NicknameData,
+    getUserScores
 }

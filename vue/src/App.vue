@@ -1,8 +1,9 @@
 <template>
   <div id="app">
-    <h1>Welcome to Reaction404</h1>
-    <p>Choose an option below:</p>
-    <div class="button-container">
+    <h1 v-if="!login">Welcome to Reaction404</h1>
+    <p v-if="!login">Choose an option below:</p>
+
+    <div class="button-container" v-if="!login">
       <router-link to="/login">
         <button class="primary-button animated-button">Login</button>
       </router-link>
@@ -10,81 +11,212 @@
         <button class="secondary-button animated-button">Sign In</button>
       </router-link>
     </div>
+
+    <div v-else class="dashboard">
+      <h1>Welcome Back {{nickname}}!</h1>
+      <p>You are now logged in.</p>
+      <div class="top-bar">
+        <button @click="goToProfile" class="profile-button">Profile</button>
+
+        <router-link to="/game">
+          <button class="game-button">Go to Game</button>
+        </router-link>
+
+        <button @click="handleLogout" class="logout-button">Logout</button>
+      </div>
+    </div>
+
     <router-view></router-view>
   </div>
 </template>
 
 <script>
 export default {
-  name: "App",
+  name: 'App',
+  data() {
+    return {
+      login: false, // Global login state
+      username: '',
+      nickname: ''
+    };
+  },
+  methods: {
+    handleLogout() {
+      this.login = false; // Set login state to false
+      this.$router.push({ name: 'home' });
+    },
+    goToProfile() {
+      this.$router.push({ name: 'profile' });
+    },
+  },
 };
 </script>
 
 <style>
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 /* App Styles */
 #app {
-  text-align: center;
-  margin-top: 50px;
   font-family: "Poppins", sans-serif;
-  color: #ffffff;
-  background: linear-gradient(135deg, #1e3a8a, #6d28d9);
+  text-align: center;
+  background: linear-gradient(135deg, #6b21a8, #1e3a8a); /* Smooth gradient background */
   min-height: 100vh;
   display: flex;
+  width: 100%;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  animation: fadeIn 1s ease-in;
+  position: relative;
+  color: white; /* White text color */
+  padding: 0; /* Remove padding for full-screen effect */
+  overflow: hidden;
 }
+
+/* Welcome Titles */
 h1 {
   font-size: 2.5rem;
   margin-bottom: 10px;
   animation: slideDown 1s ease-in-out;
+  color: white;
 }
+
 p {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
+  color: #d1d5db;
   margin-bottom: 30px;
 }
+
+/* Button Container */
 .button-container {
   display: flex;
+  gap: 25px;
   justify-content: center;
-  gap: 20px;
+  flex-wrap: wrap;
+  z-index: 10; /* Make sure buttons are on top */
 }
+
+.game-button {
+  background-color: #10b981; /* Green button for the game */
+  color: white;
+}
+
+.game-button:hover {
+  background-color: #059669;
+  transform: translateY(-5px) scale(1.05);
+}
+
+/* Buttons */
 button {
-  padding: 12px 20px;
-  font-size: 1rem;
-  border-radius: 50px;
+  padding: 14px 28px;
+  font-size: 1.2rem;
+  border-radius: 30px;
   border: none;
   cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease-in-out;
+  text-transform: uppercase;
+  font-weight: 600;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 1;
 }
+
 .primary-button {
   background-color: #4f46e5;
   color: white;
 }
+
 .primary-button:hover {
   background-color: #3730a3;
-  transform: scale(1.1);
+  transform: translateY(-5px) scale(1.05);
 }
+
 .secondary-button {
   background-color: #9333ea;
   color: white;
 }
+
 .secondary-button:hover {
   background-color: #6b21a8;
-  transform: scale(1.1);
+  transform: translateY(-5px) scale(1.05);
 }
+
+/* Animated Buttons */
 .animated-button {
   animation: buttonBounce 1.5s infinite;
 }
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
+
+/* Top Bar (Logout/Profile buttons) */
+.top-bar {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 10;
 }
 
+/* Profile Button */
+.profile-button {
+  background-color: #38bdf8;
+  color: white;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
 
+.profile-button:hover {
+  background-color: #0ea5e9;
+  transform: translateY(-3px) scale(1.05);
+}
 
+/* Logout Button */
+.logout-button {
+  background-color: #ef4444;
+  color: white;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.logout-button:hover {
+  background-color: #b91c1c;
+  transform: translateY(-3px) scale(1.05);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+
+  button {
+    font-size: 1rem;
+    padding: 12px 24px;
+  }
+
+  .logout-button {
+    font-size: 0.9rem;
+    padding: 8px 16px;
+  }
+}
 
 /* Animations */
 @keyframes fadeIn {
@@ -95,16 +227,7 @@ html, body {
     opacity: 1;
   }
 }
-@keyframes slideDown {
-  from {
-    transform: translateY(-20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
+
 @keyframes buttonBounce {
   0%, 100% {
     transform: translateY(0);
@@ -113,4 +236,5 @@ html, body {
     transform: translateY(-5px);
   }
 }
+
 </style>

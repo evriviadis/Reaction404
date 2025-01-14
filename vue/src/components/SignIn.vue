@@ -45,6 +45,9 @@
                     const data = await response.json();
                     console.log('Login Success:', data);
                     // Handle successful login (redirect, store token, etc.)
+
+                    this.$root.login = true;
+                    this.$router.push({name: 'game'});
                 } else {
                     const data = await response.json();
                     console.log('Login Failed:', data);
