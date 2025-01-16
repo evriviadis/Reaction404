@@ -4,19 +4,11 @@
 import pkg from 'pg';
 const { Pool } = pkg;
 
-
-
-/*const poolConfig = {
-    max: 5,
-    min: 2,
-    idleTimeoutMillis: 600000,
-}; */
-
-const Database = "Reaction404_db";
-const UserName = "postgres";
-const password = "liapis8888";
+const Database = "reaction404_db";
+const UserName = "chrismountakis";
+const password = "9104";
 const port = 5432;
-const host = '192.168.1.9';
+const host = "localhost";
 
 const pool = new Pool({
     user: UserName,
@@ -113,7 +105,7 @@ async function getTopScores() {
 }
 
 async function getUserScores(user_id) {
-    const Query = 'SELECT s.score FROM scores s WHERE s.user_id = $1 ORDER BY s.score ASC LIMIT 10;';
+    const Query = 'SELECT s.score FROM scores s WHERE s.user_id = $1 ORDER BY s.score ASC LIMIT 3;';
     const Params = [user_id];
 
     try {
@@ -126,27 +118,19 @@ async function getUserScores(user_id) {
 
 
 
-/* 
+
 (async () => {
-    await insertUser("chris", "muttz", "chris@gmail.com", "9104");
-    await insertUser("evris", "kolaki", "evris@gmail.com", "kwdikos");
-    await insertUser("mpampis", "mpampisgod", "mpampis@gmail.com", "123");
-    await insertScore(1, 100);
-    await insertScore(3, 40);
-    await insertScore(4, 25);
+    //await insertUser("chris", "muttz", "chris@gmail.com", "9104");
+    //await insertUser("evris", "kolaki", "evris@gmail.com", "kwdikos");
+    //await insertUser("mpampis", "mpampisgod", "mpampis@gmail.com", "123");
+    //await insertScore(1, 100);
+    //await insertScore(3, 40);
+    //await insertScore(4, 25);
     users();
-    getTopScores()
+    getTopScores();
     //UsersData(1);
 })();
 
- */
-
-(async () => {
-    users();
-    //getTopScores()
-    /* let result = await UsersData(1);
-    console.log(result); */
-})();
 
 //export all functions
 export const db = {

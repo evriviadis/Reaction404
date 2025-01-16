@@ -34,9 +34,6 @@ const registeruser = async (req, res) => {
     }
 }
 
-
-
-
 const login = async (req, res) => {
     //CHECK IF USER EXISTS
     const login_user = await db.UsernameData(req.body.username);
@@ -76,9 +73,13 @@ const users_scores = async (req, res) => {
 
 const insert_score = async (req, res) => {
     const user = await db.UsernameData(req.body.username);
-
     await db.insertScore(user.id,req.body.score);
     res.status(200).send({message:"insert success"});
+}
+
+const getLeaderBoard = async (req, res) => {
+    const scores = await db.getTopScores();
+    res.status(200).send({messege: "got top scores", scores:scores});
 }
 
 export const usersController = {
@@ -86,4 +87,5 @@ export const usersController = {
     login,
     insert_score,
     users_scores,
+    getLeaderBoard
 }

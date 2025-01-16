@@ -2,7 +2,7 @@
     <h1>Hi, this is the profile</h1>
   
     <div>
-      <button class="score-button" @click="showScores" v-if="!ScoresVisible"> Show My Scores </button>
+      <button class="score-button" @click="showScores" v-if="!ScoresVisible"> Show Top 3 Scores </button>
   
       <div v-if="ScoresVisible" class="scores-container">
         <ul v-if="scores.length" class="score-list">
@@ -10,10 +10,11 @@
             Score: <span>{{ score }}</span>
           </li>
         </ul>
-        <p v-else class="no-scores">No scores available.</p>
+        <p v-else class="no-scores"> No scores available. </p>
   
         <button class="score-button" @click="HideScores"> Hide Scores </button>
       </div>
+
     </div>
   </template>
   
@@ -66,9 +67,6 @@
   </script>
   
   <style>
-  /* Profile Page Styles */
-  
-  /* Heading Style */
   h1 {
     font-size: 2.5rem;
     margin-bottom: 20px;
@@ -76,7 +74,6 @@
     color: white;
   }
   
-  /* Button Style */
   .score-button {
     padding: 14px 24px;
     font-size: 1.2rem;
@@ -108,7 +105,6 @@
     animation: fadeIn 0.5s ease-in-out;
   }
   
-  /* Score List */
   .score-list {
     list-style-type: none;
     padding: 0;
@@ -138,14 +134,12 @@
     background-color: #d1d5db;
   }
   
-  /* No Scores Text */
   .no-scores {
     font-size: 1.2rem;
     font-weight: 500;
     color: #6b7280;
   }
   
-  /* Animations */
   @keyframes fadeIn {
     from {
       opacity: 0;

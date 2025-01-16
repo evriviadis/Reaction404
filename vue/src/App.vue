@@ -16,9 +16,10 @@
       <h1>Welcome Back {{nickname}}!</h1>
       <p>You are now logged in.</p>
       <div class="top-bar">
-        <button @click="goToProfile" class="profile-button">Profile</button>
-
-        <router-link to="/game">
+        <router-link :to="{ name: 'Profile', params: { nickname: this.nickname }}">
+          <button  class="profile-button">Profile</button>
+        </router-link>
+        <router-link :to="{name: 'Game'}">
           <button class="game-button">Go to Game</button>
         </router-link>
 
@@ -35,7 +36,7 @@ export default {
   name: 'App',
   data() {
     return {
-      login: false, // Global login state
+      login: false, 
       username: '',
       nickname: ''
     };
@@ -44,9 +45,6 @@ export default {
     handleLogout() {
       this.login = false; // Set login state to false
       this.$router.push({ name: 'home' });
-    },
-    goToProfile() {
-      this.$router.push({ name: 'profile' });
     },
   },
 };
@@ -59,25 +57,6 @@ export default {
   padding: 0;
   box-sizing: border-box;
 }
-
-/* App Styles */
-#app {
-  font-family: "Poppins", sans-serif;
-  text-align: center;
-  background: linear-gradient(135deg, #6b21a8, #1e3a8a); /* Smooth gradient background */
-  min-height: 100vh;
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  color: white; /* White text color */
-  padding: 0; /* Remove padding for full-screen effect */
-  overflow: hidden;
-}
-
-/* Welcome Titles */
 h1 {
   font-size: 2.5rem;
   margin-bottom: 10px;
@@ -91,6 +70,30 @@ p {
   margin-bottom: 30px;
 }
 
+html, body {
+  background: linear-gradient(135deg, #6b21a8, #1e3a8a); /* Smooth gradient background */
+  height: 100%; /* Ensure full height */
+  margin: 0; /* Remove any default margin */
+  overflow: hidden; /* Prevent scrolling */
+}
+
+#app {
+  font-family: "Poppins", sans-serif;
+  text-align: center;
+  min-height: 100vh; /* Ensure full viewport height */
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  color: white; /* White text color */
+  padding: 0; /* Remove padding for full-screen effect */
+  overflow: hidden; /* Prevent scrolling */
+  margin-bottom: 200px;
+}
+
 /* Button Container */
 .button-container {
   display: flex;
@@ -100,18 +103,8 @@ p {
   z-index: 10; /* Make sure buttons are on top */
 }
 
-.game-button {
-  background-color: #10b981; /* Green button for the game */
-  color: white;
-}
-
-.game-button:hover {
-  background-color: #059669;
-  transform: translateY(-5px) scale(1.05);
-}
-
-/* Buttons */
 button {
+  margin-top: 500px;
   padding: 14px 28px;
   font-size: 1.2rem;
   border-radius: 30px;
@@ -152,6 +145,7 @@ button {
 
 /* Top Bar (Logout/Profile buttons) */
 .top-bar {
+  margin-top: 50px;
   position: absolute;
   top: 20px;
   left: 20px;
@@ -161,7 +155,6 @@ button {
   z-index: 10;
 }
 
-/* Profile Button */
 .profile-button {
   background-color: #38bdf8;
   color: white;
@@ -179,7 +172,6 @@ button {
   transform: translateY(-3px) scale(1.05);
 }
 
-/* Logout Button */
 .logout-button {
   background-color: #ef4444;
   color: white;
@@ -195,6 +187,23 @@ button {
 .logout-button:hover {
   background-color: #b91c1c;
   transform: translateY(-3px) scale(1.05);
+}
+
+.game-button {
+  background-color: #059669;
+  color: white;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500; 
+}
+
+.game-button:hover {
+  background-color: #05895f;
+  transform: translateY(-5px) scale(1.05);
 }
 
 /* Responsive Design */
