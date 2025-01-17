@@ -12,9 +12,9 @@ export default {
         }
     },
     mounted(){
-        if(this.score < 250){
+        if(this.score < 200){
             this.rank = "Ninja Fingers"
-        }else if(this.score <400){
+        }else if(this.score < 300){
             this.rank = "Rapid Reflexes"
         }else{
             this.rank = "Snail pace..."

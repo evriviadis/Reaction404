@@ -48,7 +48,7 @@ export default {
           this.$root.nickname = data.user.nickname;
 
           // Redirect or perform post-login actions
-          this.$router.push({name: 'game'}); // Adjust this route as needed
+          this.$router.push({name: 'Game'}); 
         } else {
           const data = await response.json();
           console.error('Login Failed:', data);

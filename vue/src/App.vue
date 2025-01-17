@@ -17,9 +17,9 @@
       <p>You are now logged in.</p>
       <div class="top-bar">
         <router-link :to="{ name: 'Profile', params: { nickname: this.nickname }}">
-          <button  class="profile-button">Profile</button>
+          <button class="profile-button">Profile</button>
         </router-link>
-        <router-link :to="{name: 'Game'}">
+        <router-link :to="{ name: 'Game'}">
           <button class="game-button">Go to Game</button>
         </router-link>
 
