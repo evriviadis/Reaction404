@@ -14,3 +14,12 @@ user_router.route("/insert_score")
 
 user_router.route("/userscore")
     .post(usersController.users_scores)
+
+user_router.route("/leaderboard")
+    .get(usersController.getLeaderboard)
+
+user_router.route("/check_nickname")
+    .post(usersController.check_nickname)
+
+user_router.route("/achievements")
+    .post(usersController.achievements)

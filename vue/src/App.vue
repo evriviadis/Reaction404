@@ -13,15 +13,31 @@
     </div>
 
     <div v-else class="dashboard">
-      <h1>Welcome Back {{nickname}}!</h1>
-      <p>You are now logged in.</p>
+      <!-- <h1>Welcome Back {{nickname}}!</h1>
+      <p>You are now logged in.</p> -->
       <div class="top-bar">
         <router-link :to="{ name: 'Profile', params: { nickname: this.nickname }}">
           <button class="profile-button">Profile</button>
         </router-link>
-        <router-link :to="{ name: 'Game'}">
+
+        <router-link :to="{ name: 'Leaderboard' }">
+          <button class="leaderboard-button">Leaderboard</button>
+        </router-link>
+
+        <router-link :to="{ name: 'Game' }">
           <button class="game-button">Go to Game</button>
         </router-link>
+
+        <div class="search-bar-container">
+          <input 
+            type="text" 
+            class="search-bar" 
+            placeholder="Search..." 
+            @keyup.enter="handleSearch" 
+            v-model="search"
+          />
+          <button @click="handleSearch" class="search-button">Search</button>
+        </div>
 
         <button @click="handleLogout" class="logout-button">Logout</button>
       </div>
@@ -38,7 +54,8 @@ export default {
     return {
       login: false, 
       username: '',
-      nickname: ''
+      nickname: '',
+      search: '',
     };
   },
   methods: {
@@ -46,6 +63,35 @@ export default {
       this.login = false; // Set login state to false
       this.$router.push({ name: 'home' });
     },
+    async handleSearch() {
+      console.log("Search triggered");
+
+      try {
+          const response = await fetch("http://localhost:8080/users/check_nickname", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              nickname: this.search,
+            }),
+          });
+
+          if (response.ok) {
+            console.log("nickname found");
+
+            this.$router.push({ name: 'Profile', params: {nickname: this.search}});
+          } else {
+            const data = await response.json();
+            console.error("request Failed:", data);
+
+            alert("No user with this nickanme found");
+          }
+        } catch (error) {
+          console.error("Request failed:", error);
+          alert("An error occurred. Please try again later.");
+        }
+    }
   },
 };
 </script>
@@ -88,9 +134,9 @@ html, body {
   align-items: center;
   justify-content: center;
   position: relative;
-  color: white; /* White text color */
-  padding: 0; /* Remove padding for full-screen effect */
-  overflow: hidden; /* Prevent scrolling */
+  color: white; 
+  padding: 0; 
+  overflow: hidden; 
   margin-bottom: 200px;
 }
 
@@ -116,6 +162,7 @@ button {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   position: relative;
   z-index: 1;
+  margin-bottom: 1000px;
 }
 
 .primary-button {
@@ -138,12 +185,10 @@ button {
   transform: translateY(-5px) scale(1.05);
 }
 
-/* Animated Buttons */
 .animated-button {
   animation: buttonBounce 1.5s infinite;
 }
 
-/* Top Bar (Logout/Profile buttons) */
 .top-bar {
   margin-top: 50px;
   position: absolute;
@@ -170,6 +215,23 @@ button {
 .profile-button:hover {
   background-color: #0ea5e9;
   transform: translateY(-3px) scale(1.05);
+}
+
+.leaderboard-button {
+  background-color: #f59e0b;
+  color: white;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.leaderboard-button:hover {
+  background-color: #d97706;
+  transform: translateY(-5px) scale(1.05);
 }
 
 .logout-button {
@@ -206,7 +268,6 @@ button {
   transform: translateY(-5px) scale(1.05);
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   h1 {
     font-size: 2.5rem;
@@ -227,7 +288,39 @@ button {
   }
 }
 
-/* Animations */
+.search-bar-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-bar {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 20px;
+  flex: 1;
+  max-width: 300px;
+  transition: all 0.3s ease;
+}
+
+.search-bar:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 5px rgba(79, 70, 229, 0.5);
+}
+
+.search-button {
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

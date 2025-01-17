@@ -1,7 +1,8 @@
 <template>
     <h1>Reaction404</h1>
     <button @click = "start" :disabled = "isPlaying"> play </button>
-    <Block v-if="isPlaying" :delay="delay" @end="endGame" />
+    <h2 v-if="error"> You hit too early.</h2>
+    <Block v-if="isPlaying" :delay="delay" @end="endGame" @error="errorGame" />
     <Results v-if="showResults" :score="score" />
   </template>
   
@@ -19,6 +20,7 @@
         delay: null,
         score: null,
         showResults: false,
+        error: false
       }
     },
     methods: {
@@ -26,7 +28,14 @@
         this.delay = 2000 + Math.random() * 5000
         this.isPlaying = true
         this.showResults = false
+        this.error = false
       },
+
+      errorGame() {
+        this.error = true;
+        this.isPlaying = false
+        console.log("player hit too early");
+      },  
 
       async endGame(reactionTime) {
         this.score = reactionTime; 

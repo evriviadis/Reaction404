@@ -3,12 +3,19 @@
 
 import pkg from 'pg';
 const { Pool } = pkg;
-
+/* 
 const Database = "reaction404_db";
 const UserName = "chrismountakis";
 const password = "9104";
 const port = 5432;
-const host = "localhost";
+const host = "localhost"; */
+
+const Database = "Reaction404_db";
+const UserName = "postgres";
+const password = "liapis8888";
+const port = 5432;
+const host = '192.168.1.9';
+
 
 const pool = new Pool({
     user: UserName,
@@ -31,6 +38,14 @@ async function executeQuery(query, params = []) {
 // print all users data
 async function users(){
     const Query = 'SELECT * FROM users;';
+    const Params = [];
+
+    const result = await executeQuery(Query,Params);
+    return result;
+}
+
+async function achievements(){
+    const Query = 'SELECT * FROM achievements;';
     const Params = [];
 
     const result = await executeQuery(Query,Params);
@@ -116,7 +131,78 @@ async function getUserScores(user_id) {
     }
 }
 
+async function GamesNumber(user_id) {
+    const Query = 'SELECT COUNT(*) AS games_played FROM scores WHERE user_id = $1;';
+    const Params = [user_id];
 
+    try {
+        const result = await executeQuery(Query,Params);
+        return result;
+    } catch (err) {
+        console.error('games number failed', err);
+    }
+}
+
+async function getUserTopScore(user_id) {
+    const Query = 'SELECT s.score FROM scores s WHERE s.user_id = $1 ORDER BY s.score ASC LIMIT 1;';
+    const Params = [user_id];
+
+    try {
+        const result = await executeQuery(Query,Params);
+        return result;
+    } catch (err) {
+        console.error('user top score failed', err);
+    }
+}
+
+async function isUserTop10(user_id) {
+    const Query = 'SELECT 1 FROM (SELECT user_id FROM scores ORDER BY score ASC LIMIT 10) AS top_users WHERE user_id = $1 limit 1';
+    const Params = [user_id];
+
+    try {
+        const result = await executeQuery(Query,Params);
+        return result;
+    } catch (err) {
+        console.error('IsUserTop10 failed', err);
+    }
+}
+
+async function getAchievements(user_id) {
+    const Query = 'SELECT achievement_id, achieved_at FROM user_achievements WHERE user_id = $1';
+    const Params = [user_id];
+
+    try {
+        const result = await executeQuery(Query,Params);
+        return result;
+    } catch (err) {
+        console.error('getAchievements failed', err);
+    }
+}
+
+async function wonAchievement(user_id, achievement_id){
+    const Query = 'INSERT INTO user_achievements (user_id, achievement_id) VALUES ($1, $2);';
+    const Params = [user_id, achievement_id];
+
+    try {
+        const result = await executeQuery(Query,Params);
+        return result;
+    } catch (err) {
+        console.error('wonAchievement failed', err);
+    }
+}
+/* async function once(){
+    const Query = `INSERT INTO achievements (name, description)
+VALUES
+('Professional', 'Achieved a top 10 score on the global leaderboard');`;
+    const Params = [];
+
+    try {
+        const result = await executeQuery(Query,Params);
+        return result;
+    } catch (err) {
+        console.error('IsUserTop10 failed', err);
+    }  
+} */
 
 
 (async () => {
@@ -126,8 +212,10 @@ async function getUserScores(user_id) {
     //await insertScore(1, 100);
     //await insertScore(3, 40);
     //await insertScore(4, 25);
+    /* once(); */
     users();
     getTopScores();
+    achievements();
     //UsersData(1);
 })();
 
@@ -141,5 +229,11 @@ export const db = {
     insertScore,
     getTopScores,
     NicknameData,
-    getUserScores
+    getUserScores,
+    GamesNumber,
+    getUserTopScore,
+    isUserTop10,
+    getAchievements,
+    wonAchievement,
+    achievements
 }

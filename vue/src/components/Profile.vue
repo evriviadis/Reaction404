@@ -1,56 +1,79 @@
 <template>
-    <h1>Hi, this is the profile</h1>
-  
-    <div>
-      <button class="score-button" @click="showScores" v-if="!ScoresVisible"> Show Top 3 Scores </button>
-  
-      <div v-if="ScoresVisible" class="scores-container">
-        <ul v-if="scores.length" class="score-list">
-          <li v-for="(score, index) in scores" :key="index" class="score-item">
-            Score: <span>{{ score }}</span>
-          </li>
-        </ul>
-        <p v-else class="no-scores"> No scores available. </p>
-  
-        <button class="score-button" @click="HideScores"> Hide Scores </button>
-      </div>
+  <h1>Hi, this is the profile of {{ nickname }}</h1>
 
+  <div>
+    <button class="score-button" @click="showScores" v-if="!ScoresVisible">
+      Show Top 3 Scores
+    </button>
+
+    <div v-if="ScoresVisible" class="scores-container">
+      <ul v-if="scores.length" class="score-list">
+        <li v-for="(score, index) in scores" :key="index" class="score-item">
+          Score: <span>{{ score }}ms</span>
+        </li>
+      </ul>
+      <p v-else class="no-scores"> No scores available. </p>
+
+      <button class="score-button" @click="HideScores"> Hide Scores </button>
     </div>
-  </template>
-  
-  <script>
+    <div class="achievements-container">
+      <button class="achievement-button" @click="ShowAchievements">Show Achievements</button>
+    </div>
+    
+  </div>
+</template>
+
+<script>
   export default {
     data() {
       return {
         scores: [],
-        ScoresVisible: false
+        ScoresVisible: false,
+        nickname: '', // Will hold the nickname
       };
+    },
+    mounted() {
+      this.nickname = this.$route.params.nickname; // Initialize nickname on mount
+      console.log(this.nickname);
+    },
+    watch: {
+      '$route.params.nickname'(newNickname) {
+        this.nickname = newNickname; 
+        console.log('Route param changed:', newNickname);
+      }
     },
     methods: {
       HideScores() {
         this.ScoresVisible = false;
       },
+
+      ShowAchievements(){
+        this.$router.push({ name: 'Achievements', params: {nickname: this.search}});
+      },
+
       async showScores() {
         this.ScoresVisible = true;
-  
+
         console.log("Show Scores button clicked");
+        console.log(this.nickname);
+
         try {
           const response = await fetch("http://localhost:8080/users/userscore", {
             method: "POST",
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              username: this.$root.username
-            })
+              nickname: this.nickname,
+            }),
           });
-  
+
           if (response.ok) {
             const data = await response.json();
             console.log("scores Success:", data);
-  
-            this.scores = data.scores.map(scoreObj => scoreObj.score);
-  
+
+            this.scores = data.scores.map((scoreObj) => scoreObj.score);
+
             console.log(this.scores);
           } else {
             const data = await response.json();
@@ -58,13 +81,12 @@
           }
         } catch (error) {
           console.error("Request failed:", error);
-          console.log(error);
           alert("An error occurred. Please try again later.");
         }
-      }
-    }
+      },
+    },
   };
-  </script>
+</script>
   
   <style>
   h1 {
@@ -87,19 +109,33 @@
     font-weight: 500;
     text-transform: uppercase;
   }
+
+  .achievement-button {
+    padding: 14px 24px;
+    font-size: 1.2rem;
+    background-color: #9333EA;;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    transition: all 0.3s ease-in-out;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+
+  .achievement-button:hover {
+    background: #6b21a8;
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
   
   .score-button:hover {
     background-color: #3730a3;
     transform: translateY(-3px) scale(1.05);
   }
   
-  .score-button:active {
-    background-color: #2c267a;
-    transform: translateY(1px);
-  }
-  
-  /* Scores Container */
-  .scores-container {
+  .scores-container, .achievements-container {
     margin-top: 20px;
     text-align: center;
     animation: fadeIn 0.5s ease-in-out;
