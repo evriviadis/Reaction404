@@ -3,15 +3,15 @@ const { Pool } = pkg;
 
 const Database = "reaction404_db";
 const UserName = "chrismountakis";
-const password = "9104";
+const password = "code";
 const port = 5432;
 const host = "localhost"; 
 /*
 const Database = "Reaction404_db";
-const UserName = "postgres";
-const password = "liapis8888";
+const UserName = "evryviadisliapis";
+const password = "code";
 const port = 5432;
-const host = '192.168.1.9';
+const host = 'localhost';
 */
 
 const pool = new Pool({
