@@ -3,8 +3,6 @@ import bcrypt from 'bcrypt';
 
 //Reaction404db
 import {db} from '../Database/db_handler.js';
-import { ADDRGETNETWORKPARAMS } from 'dns';
-import { Console } from 'console';
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -16,7 +14,7 @@ const registeruser = async (req, res) => {
         const username_check = await db.UsernameData(new_user.username);
         const nickname_check = await db.NicknameData(new_user.nickname);
         if (username_check || nickname_check) {
-            console.log("username or nickname already in use");
+            console.log("Username or Nickname already in use");
             res.status(400).send({message:"Username or Nickname already in use."});
         } else {
 
@@ -27,7 +25,7 @@ const registeruser = async (req, res) => {
             //SAVE USER
             db.insertUser(new_user.username, new_user.nickname, new_user.password);
 
-            console.log("user successfully signed in");
+            console.log("User successfully signed in");
             res.status(200).send({message:"user inserted in the database"});
         }
     } catch (error) {
@@ -41,7 +39,7 @@ const login = async (req, res) => {
     const login_user = await db.UsernameData(req.body.username);
     if (!login_user) {
         console.log("no username match");
-        return res.status(401).send({message:"Cannod find user. Try another Username / Email.",errors:"User not found.", status:401});
+        return res.status(401).send({message:"Cannot find user. Try another Username / Email.",errors:"User not found.", status:401});
     } else {
         try {
             //CHECK PASSWORD VALIDATION
@@ -77,15 +75,15 @@ const users_scores = async (req, res) => {
 
 const insert_score = async (req, res) => {
     const user = await db.UsernameData(req.body.username);
-    await db.insertScore(user.id,req.body.score);
+    await db.insertScore(user.id, req.body.score);
 
 
-    const numberOfGames = await db.GamesNumber(user.id);
-    if(numberOfGames === 1){
+    const [numberOfGames] = await db.GamesNumber(user.id);
+    if(numberOfGames.games_played == 1){
         db.wonAchievement(user.id, 4);
-    }else if(numberOfGames === 10){
+    }else if(numberOfGames.games_played == 10){
         db.wonAchievement(user.id, 5);
-    }else if(numberOfGames === 100){
+    }else if(numberOfGames.games_played == 100){
         db.wonAchievement(user.id, 6);
     }
 

@@ -12,12 +12,15 @@ export default {
         }
     },
     mounted(){
+        if(this.score < 100){
+            this.rank = "Hacker"
+        } 
         if(this.score < 200){
-            this.rank = "Ninja Fingers"
-        }else if(this.score < 300){
             this.rank = "Rapid Reflexes"
-        }else{
+        }else if(this.score < 300){
             this.rank = "Snail pace..."
+        }else{
+            this.rank = "Too slow :("
         }
     }
 }

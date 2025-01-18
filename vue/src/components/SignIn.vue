@@ -1,4 +1,4 @@
-<template>
+  <template>
     <div class="sign-in-page">
       <h2>Sign In Page</h2>
       <p>Create your account by filling in the details below:</p>
@@ -13,60 +13,57 @@
   
   <script>
     export default {
-        data() {
-            return {
-                username: '',
-                nickname: '',
-                password: '',
-            };
-        },
-        methods: {
-            async handleSignIn() {
-                console.log('Sign In Attempt');
-                console.log('Username:', this.username);
-                console.log('nickname:', this.nickname);
-                console.log('Password:', this.password);
-                
-                try {
-                    const response = await fetch('http://localhost:8080/users/register', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            username: this.username,
-                            nickname: this.nickname,
-                            password: this.password,
-                        }),
-                });
+      data() {
+        return {
+          username: '',
+          nickname: '',
+          password: '',
+        };
+      },
+      methods: {
+        async handleSignIn() {
+          console.log('Sign In Attempt');
+          console.log('Username:', this.username);
+          console.log('nickname:', this.nickname);
+          console.log('Password:', this.password);
+          
+          try {
+            const response = await fetch('http://localhost:8080/users/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: this.username,
+                    nickname: this.nickname,
+                    password: this.password,
+                }),
+            });
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Login Success:', data);
 
-                // Handle the response
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log('Login Success:', data);
-                    // Handle successful login (redirect, store token, etc.)
+                this.$root.login = true;          
+                this.$root.username = this.username;
+                this.$root.nickname = this.nickname;
 
-                    this.$root.login = true;
-                    this.$router.push({name: 'game'});
-                } else {
-                    const data = await response.json();
-                    console.log('Login Failed:', data);
-                    console.log("status:",response.status);
-                    console.error('Login Failed:', response.status);
-                    // Handle login failure (show error message, etc.)
-                }
-            } catch (error) {
-                console.log("error aderfe");
-                console.error('Request failed', error);
-                // Handle network errors or unexpected issues
+                this.$router.push({name: 'Game'});
+            } else {
+                const data = await response.json();
+                console.log('Login Failed:', data);
+                console.log("status:",response.status);
+                console.error('Login Failed:', response.status);
             }
-            },
+          } catch (error) {
+              console.log("error");
+              console.error('Request failed', error);
+              // Handle network errors or unexpected issues
+          }
         },
+      },
     };
   </script>
-  
   <style>
-  /* Sign-In Page Styles */
   .sign-in-page {
     text-align: center;
     padding: 20px;

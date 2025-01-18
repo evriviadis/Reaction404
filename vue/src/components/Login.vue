@@ -65,7 +65,6 @@ export default {
 </script>
   
   <style>
-  /* Login Page Styles */
   .login-page {
     text-align: center;
     padding: 20px;

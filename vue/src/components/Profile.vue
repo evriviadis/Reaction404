@@ -33,7 +33,7 @@
       };
     },
     mounted() {
-      this.nickname = this.$route.params.nickname; // Initialize nickname on mount
+      this.nickname = this.$route.params.nickname; 
       console.log(this.nickname);
     },
     watch: {
@@ -48,7 +48,7 @@
       },
 
       ShowAchievements(){
-        this.$router.push({ name: 'Achievements', params: {nickname: this.search}});
+        this.$router.push({ name: 'Achievements', params: {nickname: this.search} });
       },
 
       async showScores() {
@@ -187,7 +187,6 @@
     }
   }
   
-  /* Responsive Design */
   @media (max-width: 768px) {
     h1 {
       font-size: 2rem;

@@ -41,7 +41,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@vue/cli-service": "^5.0.8",
+    "@vue/cli-service": "^3.3.1",
     "nodemon": "^3.1.0"
   },
   "description": ""

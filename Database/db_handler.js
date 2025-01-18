@@ -1,21 +1,18 @@
-//import {Pool} from 'pg';
-//const {Pool}=require('pg');
-
 import pkg from 'pg';
 const { Pool } = pkg;
-/* 
+
 const Database = "reaction404_db";
 const UserName = "chrismountakis";
 const password = "9104";
 const port = 5432;
-const host = "localhost"; */
-
+const host = "localhost"; 
+/*
 const Database = "Reaction404_db";
 const UserName = "postgres";
 const password = "liapis8888";
 const port = 5432;
 const host = '192.168.1.9';
-
+*/
 
 const pool = new Pool({
     user: UserName,
@@ -190,33 +187,11 @@ async function wonAchievement(user_id, achievement_id){
         console.error('wonAchievement failed', err);
     }
 }
-/* async function once(){
-    const Query = `INSERT INTO achievements (name, description)
-VALUES
-('Professional', 'Achieved a top 10 score on the global leaderboard');`;
-    const Params = [];
-
-    try {
-        const result = await executeQuery(Query,Params);
-        return result;
-    } catch (err) {
-        console.error('IsUserTop10 failed', err);
-    }  
-} */
-
 
 (async () => {
-    //await insertUser("chris", "muttz", "chris@gmail.com", "9104");
-    //await insertUser("evris", "kolaki", "evris@gmail.com", "kwdikos");
-    //await insertUser("mpampis", "mpampisgod", "mpampis@gmail.com", "123");
-    //await insertScore(1, 100);
-    //await insertScore(3, 40);
-    //await insertScore(4, 25);
-    /* once(); */
     users();
     getTopScores();
     achievements();
-    //UsersData(1);
 })();
 
 

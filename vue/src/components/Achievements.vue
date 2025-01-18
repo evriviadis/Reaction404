@@ -43,10 +43,10 @@
               const data = await response.json();
               console.log("Cards fetched successfully:", data);
 
-              this.achieved = [...data.achievements] // Replace the array
+              this.achieved = [...data.achievements] 
               console.log(this.achieved);
           
-              this.achievements = [...data.achievementDatabase] // Replace the array
+              this.achievements = [...data.achievementDatabase] 
               console.log(this.achievements);
 
             } else {
@@ -61,25 +61,26 @@
   </script>
   
   <style>
+
 .card-container {
   display: flex;
-  flex-wrap: wrap; /* Allows wrapping to the next row when cards don't fit */
-  gap: 20px; /* Spacing between cards */
-  justify-content: center; /* Centers the cards horizontally */
-  align-items: flex-start; /* Aligns items at the top */
+  flex-wrap: wrap; 
+  gap: 20px; 
+  justify-content: center; 
+  align-items: flex-start; 
   padding: 20px;
 }
 
 .card-wrapper {
-  flex: 1 1 300px; /* Cards take up at least 300px width and shrink/grow as needed */
-  max-width: 300px; /* Ensure the cards don't exceed 300px */
+  flex: 1 1 300px; 
+  max-width: 300px; 
   text-align: center;
 }
 
 .card {
-  width: 100%; /* Takes up the full width of the wrapper */
+  width: 100%; 
   height: 250px;
-  background-color: rgb(203, 84, 80); /* Red background for unlocked cards */
+  background-color: rgb(203, 84, 80); 
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;
@@ -89,14 +90,14 @@
   justify-content: center;
   align-items: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  clear: both; /* Ensure it does not overlap with floated elements above */
+  clear: both; 
   margin-top: 20px;
 }
 
 .card-wrapper.unlocked .card {
-  width: 100%; /* Takes up the full width of the wrapper */
+  width: 100%; 
   height: 250px;
-  background-color: #5ce85c; /* Light green for unlocked */
+  background-color: #5ce85c; 
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;
@@ -106,7 +107,7 @@
   justify-content: center;
   align-items: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  clear: both; /* Ensure it does not overlap with floated elements above */
+  clear: both;
   margin-top: 20px;
 }
 
@@ -125,6 +126,5 @@
   font-size: 1rem;
   color: #4b5563;
 }
-
   </style>
   

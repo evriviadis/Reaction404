@@ -13,8 +13,6 @@
     </div>
 
     <div v-else class="dashboard">
-      <!-- <h1>Welcome Back {{nickname}}!</h1>
-      <p>You are now logged in.</p> -->
       <div class="top-bar">
         <router-link :to="{ name: 'Profile', params: { nickname: this.nickname }}">
           <button class="profile-button">Profile</button>
@@ -60,7 +58,7 @@ export default {
   },
   methods: {
     handleLogout() {
-      this.login = false; // Set login state to false
+      this.login = false;
       this.$router.push({ name: 'home' });
     },
     async handleSearch() {
@@ -85,7 +83,7 @@ export default {
             const data = await response.json();
             console.error("request Failed:", data);
 
-            alert("No user with this nickanme found");
+            alert("No user with this Nickname found");
           }
         } catch (error) {
           console.error("Request failed:", error);
@@ -97,7 +95,6 @@ export default {
 </script>
 
 <style>
-/* General Reset */
 * {
   margin: 0;
   padding: 0;
@@ -117,16 +114,16 @@ p {
 }
 
 html, body {
-  background: linear-gradient(135deg, #6b21a8, #1e3a8a); /* Smooth gradient background */
-  height: 100%; /* Ensure full height */
-  margin: 0; /* Remove any default margin */
-  overflow: hidden; /* Prevent scrolling */
+  background: linear-gradient(135deg, #6b21a8, #1e3a8a); 
+  height: 100%; 
+  margin: 0;
+  overflow: hidden; 
 }
 
 #app {
   font-family: "Poppins", sans-serif;
   text-align: center;
-  min-height: 100vh; /* Ensure full viewport height */
+  min-height: 100vh;
   display: flex;
   width: 100%;
   height: 100%;
@@ -140,13 +137,13 @@ html, body {
   margin-bottom: 200px;
 }
 
-/* Button Container */
+
 .button-container {
   display: flex;
   gap: 25px;
   justify-content: center;
   flex-wrap: wrap;
-  z-index: 10; /* Make sure buttons are on top */
+  z-index: 10; 
 }
 
 button {
