@@ -1,18 +1,27 @@
 import pkg from 'pg';
 const { Pool } = pkg;
+import dotenv from 'dotenv';
+dotenv.config(); // Load .env file
 
-const Database = "reaction404_db";
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl:{
+        rejectUnauthorized: false,
+    },
+});
+
+/* const Database = "reaction404_db";
 const UserName = "chrismountakis";
 const password = "code";
 const port = 5432;
 const host = "localhost"; 
-/*
+
 const Database = "Reaction404_db";
 const UserName = "evryviadisliapis";
 const password = "code";
 const port = 5432;
 const host = 'localhost';
-*/
+
 
 const pool = new Pool({
     user: UserName,
@@ -20,7 +29,9 @@ const pool = new Pool({
     database: Database,
     password: password,
     port: port,
-});
+}); */
+
+
 
 async function executeQuery(query, params = []) {
     try {
