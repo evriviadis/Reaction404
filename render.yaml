@@ -2,7 +2,7 @@ services:
   - type: web
     name: Reaction404
     runtime: node
-    region: greece
+    region: frankfurt # or another region
     plan: free
     envVars:
       - key: DATABASE_URL
