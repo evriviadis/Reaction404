@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: Reaction404
+    runtime: node
+    region: greece
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+    buildCommand: npm install
+    startCommand: npm run dev  # Change if your entry file is different
